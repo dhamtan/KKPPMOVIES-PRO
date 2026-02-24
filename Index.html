@@ -1,149 +1,198 @@
 <!DOCTYPE html>
-<html lang="hi">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Watcho Digital - Premium OTT</title>
+    <title>Premium Movies</title>
 
-    <meta name="monetag" content="582141df11779523445ef8c6a9577dc4">
-
-    <meta name="popads-verification-3635813" value="dd5b680a50f2cb1654f979a955c69855" />
-
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script async="async" data-cfasync="false" src="https://pl28735283.effectivegatecpm.com/745c1ef3a6af871203febf2e53f94208/invoke.js"></script>
 
     <style>
-        :root { --watcho-orange:#ff4f00; --bg-dark:#07080a; }
-        body { background:var(--bg-dark); color:white; font-family:Inter,sans-serif; margin:0; overflow-x:hidden; }
-        .hero-gradient { background:linear-gradient(to top,var(--bg-dark) 10%,transparent 100%); }
-        .sidebar { transform:translateX(-100%); transition:0.3s; }
-        .sidebar.open { transform:translateX(0); }
-        .ad-box { background:#111; padding:20px; margin:25px 15px; border-radius:10px; text-align:center; min-height: 100px; }
-        .live-users { background:rgba(255,79,0,0.2); border:1px solid var(--watcho-orange); border-radius:20px; padding:6px 15px; }
-        .movie-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); gap:15px; }
-        .movie-card { background:#1a1a1a; padding:10px; border-radius:10px; transition:0.3s; cursor:pointer; border: 1px solid #222; }
-        .movie-card:hover { transform:scale(1.05); border:1px solid var(--watcho-orange); }
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:Arial,sans-serif;background:linear-gradient(to bottom,#000,#111);color:#fff;overflow-x:hidden}
+        .tabs{display:flex;justify-content:center;gap:15px;padding:20px;flex-wrap:wrap}
+        .tab{background:linear-gradient(45deg,#ff8c00,#ffa500);padding:15px 25px;cursor:pointer;border-radius:25px;font-weight:700;transition:.3s;box-shadow:0 4px 10px rgba(255,140,0,.5);color:#fff}
+        .tab:hover,.active{background:linear-gradient(45deg,gold,#ffd700);transform:scale(1.05)}
+        .movies-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:25px;padding:30px;max-width:1400px;margin:0 auto}
+        .poster{width:100%;height:350px;background:#222;border-radius:15px;cursor:pointer;position:relative;overflow:hidden;transition:.3s;box-shadow:0 8px 20px rgba(0,0,0,.5)}
+        .poster:hover{transform:translateY(-10px);box-shadow:0 15px 30px rgba(255,215,0,.4)}
+        .poster img{width:100%;height:100%;object-fit:cover}
+        .gold-star{position:absolute;top:15px;right:15px;font-size:35px;color:#ffd700;text-shadow:0 0 10px gold;animation:sparkle 2s infinite}
+        @keyframes sparkle{0%,100%{opacity:1}50%{opacity:.5}}
+        .poster h3{position:absolute;bottom:10px;left:10px;margin:0;background:rgba(0,0,0,.8);padding:5px 10px;border-radius:5px;font-size:14px}
+        .poster button{position:absolute;bottom:10px;right:10px;background:linear-gradient(gold,orange);color:#000;border:none;padding:8px 15px;border-radius:20px;font-weight:700;cursor:pointer}
+        .load-more{display:block;margin:40px auto;padding:20px 50px;background:linear-gradient(yellow,gold);color:#000;border:none;border-radius:30px;font-size:18px;font-weight:700;cursor:pointer;box-shadow:0 10px 20px rgba(255,215,0,.5);transition:.3s}
+        .load-more:hover{transform:scale(1.1)}
+        #sidebar{position:fixed;left:-280px;top:0;width:280px;height:100vh;background:linear-gradient(to bottom,#333,#111);transition:.3s ease;z-index:1001;box-shadow:2px 0 20px rgba(0,0,0,.8)}
+        #sidebar.open{left:0}
+        .hamburger{position:fixed;top:25px;left:25px;z-index:1002;cursor:pointer;display:flex;flex-direction:column;justify-content:space-around;width:35px;height:30px}
+        .hamburger span{display:block;width:100%;height:5px;background:linear-gradient(white,#ccc);border-radius:3px;transition:.3s;box-shadow:0 2px 5px rgba(0,0,0,.5)}
+        .hamburger.active span:nth-child(1){transform:rotate(45deg) translate(8px,8px)}
+        .hamburger.active span:nth-child(2){opacity:0}
+        .hamburger.active span:nth-child(3){transform:rotate(-45deg) translate(7px,-7px)}
+        .sidebar-menu{padding:80px 30px 30px}
+        .sidebar-menu a{display:block;color:#ffd700;padding:18px 20px;margin:10px 0;text-decoration:none;background:rgba(255,215,0,.1);border-radius:10px;font-weight:700;transition:.3s;border-left:4px solid gold}
+        .sidebar-menu a:hover{background:rgba(255,215,0,.3);transform:translateX(10px)}
+        #player-modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.98);z-index:2000;justify-content:center;align-items:center}
+        #player{width:90%;height:70%;max-width:1200px;border-radius:15px;box-shadow:0 20px 50px rgba(0,0,0,1)}
+        .live-users{position:fixed;top:20px;right:20px;background:linear-gradient(green,#00ff00);padding:15px 25px;border-radius:30px;color:#000;font-weight:700;font-size:16px;box-shadow:0 5px 15px rgba(0,255,0,.5);animation:pulse 2s infinite;z-index:1000}
+        @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
+        .first-ad{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:linear-gradient(white,#f0f0f0);padding:30px;border-radius:20px;z-index:9999;text-align:center;box-shadow:0 20px 50px rgba(0,0,0,.8);display:none;max-width:400px}
+        .first-ad button{background:green;color:#fff;border:none;padding:12px 30px;border-radius:25px;font-weight:700;cursor:pointer;margin-top:15px}
+        
+        /* Ad Container Styling */
+        .ad-container { display: flex; justify-content: center; margin: 10px 0; min-height: 60px; }
     </style>
 </head>
-
 <body>
 
-    <button id="menuBtn" class="fixed top-4 left-4 z-50 p-2 bg-black/70 rounded md:hidden">
-        <i class="fas fa-bars text-white"></i>
-    </button>
-
-    <div id="sidebar" class="sidebar fixed top-0 left-0 h-full w-64 bg-black p-6 z-40 border-r border-white/10">
-        <h2 class="text-xl font-black text-[#ff4f00] mb-6">MENU</h2>
-        <nav class="space-y-4">
-            <a href="#" class="block hover:text-[#ff4f00]">Home</a>
-            <a href="#" class="block hover:text-[#ff4f00]">Premium Content</a>
-            <a href="#" class="block hover:text-[#ff4f00]">Live TV</a>
-        </nav>
+    <div class="ad-container">
+        <div id="container-745c1ef3a6af871203febf2e53f94208"></div>
     </div>
 
-    <div id="overlay" class="fixed inset-0 bg-black/60 hidden z-30"></div>
+    <div class="live-users" id="liveUsers">🟢 Live: <span id="userCount">1,247</span></div>
 
-    <nav class="fixed top-0 w-full z-30 flex items-center justify-between px-8 py-4 bg-black/70 backdrop-blur-md">
-        <h1 class="text-3xl font-black text-[#ff4f00]">WATCHO</h1>
-        <div class="live-users hidden md:block">
-            <i class="fas fa-users mr-1"></i> <span id="liveCount">24890</span> Live
+    <div class="hamburger" id="hamburger"><span></span><span></span><span></span></div>
+
+    <div id="sidebar">
+        <div class="sidebar-menu">
+            <a href="#premium">Premium Movies ⭐</a>
+            <a href="trailer.html">Trailer</a>
+            <a href="shorts.html">Shorts</a>
+            <a href="terms.html">Terms</a>
+            <a href="block.html">Block</a>
+            <a href="about.html">About</a>
         </div>
-        <input type="text" id="searchBox" placeholder="Search movies..." class="bg-gray-900 border border-gray-700 rounded-full px-5 py-2 text-sm w-48 md:w-72 outline-none focus:border-[#ff4f00]">
-    </nav>
+    </div>
 
-    <div class="ad-box mt-24">
-        <p class="text-[10px] text-gray-600 mb-2 uppercase">Sponsored</p>
+    <div class="first-ad" id="firstAd">
+        <h3>🎥 Premium Movies!</h3>
+        <p>Unlock Hollywood + Bollywood</p>
+        <button onclick="closeFirstAd()">Continue ➤</button>
+    </div>
+
+    <div class="ad-container">
         <script type="text/javascript">
             atOptions = {
                 'key' : 'af0c8f436074a1ddc5d523ea4bcdd0a4',
                 'format' : 'iframe',
-                'height' : 250,
-                'width' : 300,
+                'height' : 60,
+                'width' : 468,
                 'params' : {}
             };
         </script>
         <script type="text/javascript" src="//www.highperformanceformat.com/af0c8f436074a1ddc5d523ea4bcdd0a4/invoke.js"></script>
     </div>
 
-    <section class="min-h-[60vh] flex items-center px-10">
-        <div>
-            <h2 class="text-5xl font-black">Featured Premium</h2>
-            <p class="text-gray-400 mt-4 max-w-xl">Watch officially licensed high-quality movies and web series.</p>
-            <div class="flex space-x-4 mt-6">
-                <button onclick="openOffer()" class="bg-[#ff4f00] px-10 py-4 rounded font-bold hover:bg-orange-600 transition shadow-lg shadow-orange-600/20">
-                    <i class="fas fa-play mr-2"></i>WATCH NOW
-                </button>
-                <button onclick="sharePage()" class="bg-gray-800 px-8 py-4 rounded font-bold hover:bg-gray-700 transition">
-                    <i class="fas fa-share mr-2"></i>SHARE
-                </button>
-            </div>
-        </div>
-    </section>
-
-    <div class="ad-box">
-        <a href="https://omg10.com/4/10649566" target="_blank" class="bg-gradient-to-r from-yellow-500 to-orange-600 px-8 py-3 rounded-full font-bold inline-block hover:scale-105 transition">
-            🎁 Unlock VIP Access (Free)
-        </a>
+    <div class="tabs">
+        <div class="tab active" data-lang="hi">हिंदी मूवीज</div>
+        <div class="tab" data-lang="en">English</div>
+        <div class="tab" data-lang="pa">Punjabi</div>
+        <div class="tab" data-lang="south">South</div>
+        <div class="tab" data-lang="hi-dub">Hindi Dubbed</div>
+        <div class="tab" data-lang="web">Web Series</div>
     </div>
 
-    <section class="px-10 pb-16">
-        <h3 class="text-2xl font-bold mb-6">Trending Now</h3>
-        <div class="movie-grid" id="movieContainer">
-            <div class="movie-card"><img src="https://via.placeholder.com/200x300/111/fff?text=Movie+1" class="rounded mb-2">Movie 1</div>
-            <div class="movie-card"><img src="https://via.placeholder.com/200x300/111/fff?text=Movie+2" class="rounded mb-2">Movie 2</div>
-            <div class="movie-card"><img src="https://via.placeholder.com/200x300/111/fff?text=Movie+3" class="rounded mb-2">Movie 3</div>
-            <div class="movie-card"><img src="https://via.placeholder.com/200x300/111/fff?text=Movie+4" class="rounded mb-2">Movie 4</div>
-        </div>
-    </section>
+    <div class="movies-grid" id="moviesGrid">Loading Superhits...</div>
+    <button class="load-more" id="loadMore">Load More ➕</button>
 
-    <div class="ad-box">
-        <script async data-cfasync="false" src="https://pl28735283.effectivegatecpm.com/745c1ef3a6af871203febf2e53f94208/invoke.js"></script>
-        <div id="container-745c1ef3a6af871203febf2e53f94208"></div>
+    <div id="player-modal">
+        <iframe id="player" allowfullscreen allow="autoplay;fullscreen"></iframe>
     </div>
 
     <script>
-        // Sidebar Control
-        const menuBtn = document.getElementById("menuBtn");
-        const sidebar = document.getElementById("sidebar");
-        const overlay = document.getElementById("overlay");
+        const API_KEY='174d0214bf933dd59b3d5ec68a0c967f',
+              IMAGE_BASE='https://image.tmdb.org/t/p/w500',
+              MONETAG_LINK='https://omg10.com/4/10645051';
+        
+        let currentLang='hi', currentPage=1, isFirstVisit=!localStorage.visited, blockedMovies=[];
 
-        menuBtn.onclick = () => {
-            sidebar.classList.toggle("open");
-            overlay.classList.toggle("hidden");
-        };
-        overlay.onclick = () => {
-            sidebar.classList.remove("open");
-            overlay.classList.add("hidden");
-        };
+        function updateLiveUsers(){
+            document.getElementById('userCount').textContent=(1e3+Math.floor(1e3*Math.random())).toLocaleString();
+        }
+        setInterval(updateLiveUsers,3e3);
+        updateLiveUsers();
 
-        // Dynamic Live Users
-        setInterval(() => {
-            let count = 24500 + Math.floor(Math.random() * 850);
-            document.getElementById("liveCount").innerText = count.toLocaleString();
-        }, 4000);
-
-        // Monetag/PopAds Logic
-        function openOffer() {
-            window.open("https://omg10.com/4/10649566", "_blank");
+        if(isFirstVisit){
+            document.getElementById('firstAd').style.display='block';
         }
 
-        function sharePage() {
-            if (navigator.share) {
-                navigator.share({ title: "Watcho OTT", url: window.location.href });
-            } else {
-                navigator.clipboard.writeText(window.location.href);
-                alert("Link Copied!");
+        function closeFirstAd(){
+            document.getElementById('firstAd').style.display='none';
+            localStorage.visited='true';
+            window.open(MONETAG_LINK,'_blank','noopener,noreferrer');
+        }
+
+        document.getElementById('hamburger').onclick=()=>{
+            document.getElementById('sidebar').classList.toggle('open');
+            document.getElementById('hamburger').classList.toggle('active');
+        };
+
+        document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{
+            document.querySelector('.active').classList.remove('active');
+            t.classList.add('active');
+            currentLang=t.dataset.lang;
+            currentPage=1;
+            document.getElementById('moviesGrid').innerHTML='Loading...';
+            fetchMovies();
+        });
+
+        async function fetchMovies(){
+            const e=currentLang==='web'?'/discover/tv':'/discover/movie';
+            const t=new URLSearchParams({
+                api_key:API_KEY,
+                language:currentLang==='hi'?'hi-IN':currentLang==='pa'?'pa-IN':currentLang==='south'?'te-IN':'en-US',
+                sort_by:'popularity.desc',
+                page:currentPage,
+                'vote_average.gte':7
+            });
+            try{
+                const n=await fetch(`https://api.themoviedb.org/3${e}?${t}`);
+                const a=await n.json();
+                displayMovies(a.results||[]);
+            }catch(e){
+                document.getElementById('moviesGrid').innerHTML='<p style="grid-column:1/-1;text-align:center">🔥 Loading Superhits...</p>';
             }
         }
 
-        // Search Engine
-        document.getElementById("searchBox").addEventListener("keyup", function() {
-            let val = this.value.toLowerCase();
-            document.querySelectorAll(".movie-card").forEach(card => {
-                card.style.display = card.innerText.toLowerCase().includes(val) ? "block" : "none";
+        function displayMovies(e){
+            if(currentPage === 1) document.getElementById('moviesGrid').innerHTML='';
+            e.forEach(e=>{
+                if(!blockedMovies.includes(e.id)){
+                    const t=document.createElement('div');
+                    t.className='poster';
+                    t.onclick=()=>watchNow(e);
+                    t.innerHTML=`<img src="${IMAGE_BASE}${e.poster_path||''}" onerror="this.src='https://via.placeholder.com/220x350/333/fff?text=⭐PREMIUM'" alt="${e.title}"><div class="gold-star">⭐</div><h3>${e.title||e.name}</h3><button>Watch Now</button>`;
+                    document.getElementById('moviesGrid').appendChild(t);
+                }
             });
-        });
-    </script>
+            document.getElementById('loadMore').style.display='block';
+        }
 
+        async function watchNow(e){
+            window.open(MONETAG_LINK,'_blank','noopener,noreferrer');
+            try{
+                const t=await fetch(`https://api.themoviedb.org/3/${e.title?'movie':'tv'}/${e.id}/videos?api_key=${API_KEY}`);
+                const n=await t.json();
+                const a=n.results.find(e=>e.type==='Trailer');
+                document.getElementById('player').src=a?`https://www.youtube.com/embed/${a.key}?autoplay=1&rel=0`:'https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1';
+            }catch(e){
+                document.getElementById('player').src='https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1';
+            }
+            document.getElementById('player-modal').style.display='flex';
+        }
+
+        document.getElementById('loadMore').onclick=()=>{
+            currentPage++;
+            fetchMovies();
+        };
+
+        document.getElementById('player-modal').onclick=()=>{
+            document.getElementById('player-modal').style.display='none';
+            document.getElementById('player').src='';
+        };
+
+        fetchMovies();
+    </script>
 </body>
 </html>
