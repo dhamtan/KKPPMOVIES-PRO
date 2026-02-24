@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Watcho Digital - Multi-Server OTT</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root { --watcho-orange: #ff4f00; --bg-dark: #07080a; }
         body { background-color: var(--bg-dark); color: white; font-family: 'Inter', sans-serif; }
@@ -15,33 +16,113 @@
         #playerOverlay { display: none; position: fixed; inset: 0; background: black; z-index: 9999; }
         .server-btn { background: #222; padding: 8px 15px; border-radius: 5px; font-size: 12px; transition: 0.3s; }
         .server-btn:hover, .server-btn.active { background: var(--watcho-orange); }
+        .sidebar { transform: translateX(-100%); transition: 0.3s; }
+        .sidebar.open { transform: translateX(0); }
+        .stars { color: #ffd700; }
+        .ad-container { background: #1a1a1a; border-radius: 8px; padding: 20px; text-align: center; }
+        .live-users { background: rgba(255,79,0,0.2); border: 1px solid var(--watcho-orange); border-radius: 20px; }
     </style>
 </head>
 <body>
 
+    <!-- Mobile Menu Toggle -->
+    <button id="mobileMenu" class="fixed top-4 left-4 z-[101] md:hidden p-2 bg-black/60 rounded-lg">
+        <i class="fas fa-bars text-xl text-white"></i>
+    </button>
+
+    <!-- Left Sidebar -->
+    <div id="sidebar" class="sidebar fixed left-0 top-0 h-full w-64 bg-black/90 backdrop-blur-md z-[100] p-6 space-y-6">
+        <h2 class="text-xl font-black text-[#ff4f00] mb-6">MENU</h2>
+        <div class="space-y-4 text-sm">
+            <div class="about-us p-4 bg-gray-900/50 rounded-lg">
+                <h3 class="font-bold mb-3 flex items-center"><i class="fas fa-info-circle mr-2 text-[#ff4f00]"></i>ABOUT US</h3>
+                <p class="text-xs text-gray-300 leading-relaxed">हम किसी भी movies या show को host नहीं करते ना ही कोई movies का data store करते। हम सिर्फ embed link देते हैं मतलब सिर्फ share URL link देते हैं जो की एक legal work है। Host करना या store करना terms & condition के खिलाफ है। किसी को issue हो गई तो email पर mail करें और 2-5 days wait करें आपको reply मिल जाएगा। इस time के बाद आपकी issue solve ना होने पर action कर सकते हैं।</p>
+            </div>
+            <div class="contact-us p-4 bg-gray-900/50 rounded-lg">
+                <h3 class="font-bold mb-3 flex items-center"><i class="fas fa-envelope mr-2 text-[#ff4f00]"></i>CONTACT US</h3>
+                <p class="text-lg font-bold text-[#ff4f00]">help.wowmovies@gmail.com</p>
+            </div>
+            <div class="block-movies p-4 bg-gray-900/50 rounded-lg">
+                <h3 class="font-bold mb-3 flex items-center"><i class="fas fa-ban mr-2 text-red-500"></i>BLOCK MOVIES</h3>
+                <p class="text-xs text-gray-300">किसी को issue हो तो site से movie embed link को block कर दिया जाएगा।</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Overlay for sidebar -->
+    <div id="sidebarOverlay" class="fixed inset-0 bg-black/50 z-[99] hidden md:hidden"></div>
+
+    <!-- Main Navigation (Updated with Watcho style) -->
     <nav class="fixed top-0 w-full z-[100] flex items-center justify-between px-8 py-4 bg-black/60 backdrop-blur-md">
         <div class="flex items-center space-x-10">
             <h1 class="text-3xl font-black text-[#ff4f00]">WATCHO</h1>
-            <div class="hidden md:flex space-x-6 text-sm font-bold uppercase tracking-tighter">
-                <a href="#" class="text-[#ff4f00]">Home</a>
-                <a href="#" class="hover:text-[#ff4f00]">Movies</a>
-                <a href="#" class="hover:text-[#ff4f00]">Originals</a>
+            <div class="hidden lg:flex space-x-8 text-sm font-bold uppercase tracking-wider">
+                <a href="#" class="hover:text-[#ff4f00] flex items-center"><i class="fas fa-home mr-1"></i>Home</a>
+                <a href="#" class="hover:text-[#ff4f00] flex items-center"><i class="fas fa-trophy mr-1"></i>Cricket Series</a>
+                <a href="#" class="hover:text-[#ff4f00] flex items-center"><i class="fas fa-film mr-1"></i>Movies</a>
+                <a href="#" class="hover:text-[#ff4f00] flex items-center"><i class="fas fa-tv mr-1"></i>Live TV</a>
+                <a href="#" class="hover:text-[#ff4f00] flex items-center"><i class="fas fa-child mr-1"></i>Bhagti Kids</a>
+                <a href="#" class="hover:text-[#ff4f00] flex items-center"><i class="fas fa-child mr-1"></i>Kids Cartoon</a>
             </div>
+        </div>
+        <!-- Live Users Counter -->
+        <div class="live-users px-4 py-2">
+            <i class="fas fa-users mr-2"></i>
+            <span id="liveUsers">24,567</span> Live
         </div>
         <input type="text" id="search" placeholder="Search movies..." class="bg-gray-900 border border-gray-700 rounded-full px-5 py-2 text-sm w-72 outline-none focus:border-[#ff4f00]">
     </nav>
 
-    <div id="hero" class="relative h-[90vh] w-full bg-cover bg-top flex items-center">
+    <!-- Adsterra Top Banner Ad -->
+    <div class="ad-container mx-8 mt-24 p-4">
+        <!-- Replace YOUR_ADSTERRA_ID with your actual Adsterra ID -->
+        <script type="text/javascript">
+            atOptions = {
+                'key' : 'YOUR_ADSTERRA_ID',
+                'format' : 'iframe',
+                'height' : 250,
+                'width' : 300,
+                'params' : {}
+            };
+            document.write('<scr' + 'ipt type="text/javascript" src="//www.topcreativeformat.com/YOUR_ADSTERRA_ID/INV_NUM.js"></scr' + 'ipt>');
+        </script>
+    </div>
+
+    <!-- Hero Section -->
+    <div id="hero" class="relative h-[85vh] w-full bg-cover bg-top flex items-center">
         <div class="absolute inset-0 hero-gradient"></div>
         <div class="relative px-12 z-10 space-y-5 max-w-3xl">
             <span class="bg-[#ff4f00] px-3 py-1 rounded text-xs font-bold">DIGITAL PREMIER</span>
             <h2 id="heroTitle" class="text-6xl font-black leading-none">Loading...</h2>
+            <div class="flex items-center space-x-2">
+                <div id="heroRating" class="stars text-sm"></div>
+                <span id="heroVote" class="text-gray-400 text-sm"></span>
+            </div>
             <p id="heroDesc" class="text-gray-400 text-lg line-clamp-3 italic"></p>
-            <button onclick="playMovie('hero')" class="bg-[#ff4f00] text-white px-12 py-4 rounded-md font-bold text-xl hover:scale-105 transition shadow-2xl">WATCH NOW</button>
+            <div class="flex space-x-4">
+                <button onclick="playMovie('hero')" class="bg-[#ff4f00] text-white px-12 py-4 rounded-md font-bold text-xl hover:scale-105 transition shadow-2xl flex items-center">
+                    <i class="fas fa-play mr-2"></i>WATCH NOW
+                </button>
+                <button onclick="shareMovie('hero')" class="bg-gray-700 text-white px-8 py-4 rounded-md font-bold text-xl hover:bg-gray-600 transition flex items-center">
+                    <i class="fas fa-share-alt mr-2"></i>SHARE
+                </button>
+            </div>
         </div>
     </div>
 
+    <!-- Content -->
     <div class="px-10 -mt-20 relative z-20 pb-20 space-y-10">
+        <!-- Montage Direct Link Ad -->
+        <div class="ad-container">
+            <!-- Replace with your Monetag Direct Link Code -->
+            <script type="text/javascript">
+                (function(w,d,s,r,i){w[r]=w[r]||[];w[r].push({'gtm.start':
+                new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+                j=d.createElement(s);j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i;f.parentNode.insertBefore(j,f);
+            })(window,document,'script','dataLayer','YOUR_MONETAG_ID');
+            </script>
+        </div>
+
         <section>
             <h3 class="text-2xl font-bold mb-4 flex items-center"><span class="h-6 w-1 bg-[#ff4f00] mr-3"></span>Trending Highlights</h3>
             <div id="trendingSlider" class="flex space-x-5 overflow-x-auto no-scrollbar py-4"></div>
@@ -53,6 +134,7 @@
         </section>
     </div>
 
+    <!-- Player Overlay -->
     <div id="playerOverlay">
         <div class="absolute top-0 left-0 w-full p-5 flex justify-between items-center bg-black/80 z-[10001]">
             <div id="serverList" class="flex space-x-3">
@@ -82,19 +164,43 @@
             "https://embed.smashystream.com/playere.php?tmdb="
         ];
 
+        // Fake Live Users (10k-50k)
+        function updateLiveUsers() {
+            const users = Math.floor(Math.random() * (50000 - 10000) + 10000);
+            document.getElementById('liveUsers').textContent = users.toLocaleString();
+        }
+        setInterval(updateLiveUsers, 3000);
+
+        // Star Rating Function
+        function createStars(voteAverage, maxStars = 5) {
+            const stars = Math.round((voteAverage / 2) * 10) / 10;
+            let html = '';
+            for(let i = 1; i <= maxStars; i++) {
+                if(i <= stars) {
+                    html += '<i class="fas fa-star"></i>';
+                } else {
+                    html += '<i class="far fa-star"></i>';
+                }
+            }
+            return html + ` <span>(${voteAverage}/10)</span>`;
+        }
+
         async function fetchContent() {
             try {
                 const res = await fetch(`https://api.themoviedb.org/3/trending/movie/week?api_key=${API_KEY}`);
                 const data = await res.json();
                 const items = data.results;
 
-                // Sync Hero
-                document.getElementById('hero').style.backgroundImage = `url('${IMG_URL + items[0].backdrop_path}')`;
-                document.getElementById('heroTitle').innerText = items[0].title;
-                document.getElementById('heroDesc').innerText = items[0].overview;
-                document.getElementById('hero').setAttribute('data-id', items[0].id);
+                // Sync Hero with Rating
+                const heroItem = items[0];
+                document.getElementById('hero').style.backgroundImage = `url('${IMG_URL + heroItem.backdrop_path}')`;
+                document.getElementById('heroTitle').innerText = heroItem.title;
+                document.getElementById('heroDesc').innerText = heroItem.overview;
+                document.getElementById('heroRating').innerHTML = createStars(heroItem.vote_average);
+                document.getElementById('heroVote').innerText = `${heroItem.vote_count} votes`;
+                document.getElementById('hero').setAttribute('data-id', heroItem.id);
 
-                // Sync Sliders
+                // Sync Sliders with Rating & Share
                 document.getElementById('trendingSlider').innerHTML = items.map(m => createItem(m, 'w-[210px]')).join('');
                 
                 const res2 = await fetch(`https://api.themoviedb.org/3/movie/popular?api_key=${API_KEY}`);
@@ -107,14 +213,27 @@
             return `
                 <div class="${w} movie-card shadow-2xl" onclick="playMovie('${m.id}')">
                     <img src="https://image.tmdb.org/t/p/w500${m.poster_path}" class="w-full h-auto" alt="${m.title}">
-                    <div class="p-2 text-xs font-black truncate bg-gray-900">${m.title}</div>
+                    <div class="p-3 bg-gray-900">
+                        <div class="flex items-center justify-between mb-1">
+                            <div class="stars text-xs">${createStars(m.vote_average, 3)}</div>
+                        </div>
+                        <div class="text-xs font-black truncate">${m.title}</div>
+                        <div class="flex space-x-2 pt-1">
+                            <button onclick="event.stopPropagation(); playMovie('${m.id}')" class="bg-[#ff4f00] text-white p-1 rounded text-xs flex-1">
+                                <i class="fas fa-play"></i>
+                            </button>
+                            <button onclick="event.stopPropagation(); shareMovie('${m.id}')" class="bg-gray-700 text-white p-1 rounded text-xs flex-1">
+                                <i class="fas fa-share-alt"></i>
+                            </button>
+                        </div>
+                    </div>
                 </div>
             `;
         }
 
         function playMovie(id) {
             currentTmdbId = (id === 'hero') ? document.getElementById('hero').getAttribute('data-id') : id;
-            switchServer(1); // Default Server 1
+            switchServer(1);
             document.getElementById('playerOverlay').style.display = 'block';
             document.body.style.overflow = 'hidden';
         }
@@ -122,7 +241,6 @@
         function switchServer(num) {
             const btns = document.querySelectorAll('.server-btn');
             btns.forEach((b, i) => b.classList.toggle('active', i === num-1));
-            
             const player = document.getElementById('mainIframe');
             player.src = servers[num-1] + currentTmdbId;
         }
@@ -133,6 +251,33 @@
             document.body.style.overflow = 'auto';
         }
 
+        // Share Function
+        function shareMovie(id) {
+            const url = window.location.href;
+            const title = document.querySelector(`[onclick="playMovie('${id}')"] .font-black`)?.textContent || 'Movie';
+            if (navigator.share) {
+                navigator.share({
+                    title: `Watch ${title} on Watcho Digital`,
+                    url: url
+                });
+            } else {
+                navigator.clipboard.writeText(`${title}: ${url}`).then(() => {
+                    alert('Link copied to clipboard!');
+                });
+            }
+        }
+
+        // Mobile Sidebar Toggle
+        document.getElementById('mobileMenu').addEventListener('click', () => {
+            document.getElementById('sidebar').classList.toggle('open');
+            document.getElementById('sidebarOverlay').classList.toggle('hidden');
+        });
+
+        document.getElementById('sidebarOverlay').addEventListener('click', () => {
+            document.getElementById('sidebar').classList.remove('open');
+            document.getElementById('sidebarOverlay').classList.add('hidden');
+        });
+
         // Real-time Search
         document.getElementById('search').addEventListener('input', async (e) => {
             if(e.target.value.length > 2) {
@@ -142,7 +287,9 @@
             }
         });
 
+        // Initial Load
         fetchContent();
+        updateLiveUsers();
     </script>
 </body>
 </html>
