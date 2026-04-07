@@ -3,7 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Premium Movies</title>
+    
+    <meta name="google-site-verification" content="r4qiBWvH6r8g4r5B7QDJDwdewlm9aCNhUoaNleV1soA" />
+    <title>Premium Movies - Watch Latest Hollywood & Bollywood</title>
+    <meta name="description" content="Watch high-quality Premium Movies and Web Series. Hollywood, Bollywood, and South Indian movies available for free.">
+    <link rel="canonical" id="meta-canon" href="">
 
     <script async="async" data-cfasync="false" src="https://pl28735283.effectivegatecpm.com/745c1ef3a6af871203febf2e53f94208/invoke.js"></script>
 
@@ -40,7 +44,6 @@
         .first-ad{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:linear-gradient(white,#f0f0f0);padding:30px;border-radius:20px;z-index:9999;text-align:center;box-shadow:0 20px 50px rgba(0,0,0,.8);display:none;max-width:400px}
         .first-ad button{background:green;color:#fff;border:none;padding:12px 30px;border-radius:25px;font-weight:700;cursor:pointer;margin-top:15px}
         
-        /* Ad Container Styling */
         .ad-container { display: flex; justify-content: center; margin: 10px 0; min-height: 60px; }
     </style>
 </head>
@@ -56,7 +59,7 @@
 
     <div id="sidebar">
         <div class="sidebar-menu">
-            <a href="#premium">Premium Movies ⭐</a>
+            <a href="#premium" onclick="location.reload()">Premium Movies ⭐</a>
             <a href="trailer.html">Trailer</a>
             <a href="shorts.html">Shorts</a>
             <a href="terms.html">Terms</a>
@@ -107,6 +110,11 @@
         
         let currentLang='hi', currentPage=1, isFirstVisit=!localStorage.visited, blockedMovies=[];
 
+        // FIX: URL Sync for Indexing
+        const urlParams = new URLSearchParams(window.location.search);
+        const movieID = urlParams.get('m') || urlParams.get('id');
+        document.getElementById('meta-canon').href = window.location.origin + window.location.pathname;
+
         function updateLiveUsers(){
             document.getElementById('userCount').textContent=(1e3+Math.floor(1e3*Math.random())).toLocaleString();
         }
@@ -149,6 +157,19 @@
             try{
                 const n=await fetch(`https://api.themoviedb.org/3${e}?${t}`);
                 const a=await n.json();
+                
+                // AUTO-LOAD IF LINKED FROM SITEMAP
+                if(movieID && currentPage === 1) {
+                    const specific = a.results.find(m => m.id == movieID);
+                    if(specific) watchNow(specific, true);
+                    else {
+                        // Agar first page pe nahi hai toh TMDB se details laao
+                        const res = await fetch(`https://api.themoviedb.org/3/${currentLang==='web'?'tv':'movie'}/${movieID}?api_key=${API_KEY}`);
+                        const movieData = await res.json();
+                        if(movieData.id) watchNow(movieData, true);
+                    }
+                }
+                
                 displayMovies(a.results||[]);
             }catch(e){
                 document.getElementById('moviesGrid').innerHTML='<p style="grid-column:1/-1;text-align:center">🔥 Loading Superhits...</p>';
@@ -169,14 +190,18 @@
             document.getElementById('loadMore').style.display='block';
         }
 
-        async function watchNow(e){
-            window.open(MONETAG_LINK,'_blank','noopener,noreferrer');
+        async function watchNow(e, isAuto = false){
+            if(!isAuto) window.open(MONETAG_LINK,'_blank','noopener,noreferrer');
+            
+            // UPDATE URL FOR GOOGLE BOT
+            window.history.pushState({}, '', '?m=' + e.id);
+
             try{
                 const t=await fetch(`https://api.themoviedb.org/3/${e.title?'movie':'tv'}/${e.id}/videos?api_key=${API_KEY}`);
                 const n=await t.json();
-                const a=n.results.find(e=>e.type==='Trailer');
+                const a=n.results.find(v=>v.type==='Trailer');
                 document.getElementById('player').src=a?`https://www.youtube.com/embed/${a.key}?autoplay=1&rel=0`:'https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1';
-            }catch(e){
+            }catch(err){
                 document.getElementById('player').src='https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1';
             }
             document.getElementById('player-modal').style.display='flex';
@@ -190,6 +215,7 @@
         document.getElementById('player-modal').onclick=()=>{
             document.getElementById('player-modal').style.display='none';
             document.getElementById('player').src='';
+            window.history.pushState({}, '', window.location.pathname);
         };
 
         fetchMovies();
